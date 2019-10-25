@@ -23,18 +23,16 @@ var climbing = false
 
 onready var playerSprite = self.get_node("PlayerSprite")
 
-
 func _physics_process(delta):
-	var force = Vector2(0, gravity)
-	var goLeft = Input.is_action_pressed("LEFT")
-	var goRight = Input.is_action_pressed("RIGHT")
-	var jump = Input.is_action_just_pressed("JUMP")
+	_move(delta)
+	_jump(delta)
+	_climb()
+	_animate()
+	
+func _climb():
 	var climbUp = Input.is_action_pressed("ui_up")
 	var climbDown = Input.is_action_pressed("ui_down")
 	
-	var stop = true
-	
-
 	if onLadder:
 		onAirTime = 0
 		gravity = 0
@@ -50,12 +48,26 @@ func _physics_process(delta):
 	else:
 		gravity = normalGravity
 		climbing = false
+	
+func _jump(delta):
+	var jump = Input.is_action_just_pressed("JUMP")
+	if jump:
+		if onAirTime < jumpMaxAirborneTime and jumpCount < maxJumps:
+			velocity.y = -jumpForce
+			jumpCount += 1
+	onAirTime += delta
+	
+func _move(delta):
+	var goLeft = Input.is_action_pressed("LEFT")
+	var goRight = Input.is_action_pressed("RIGHT")
+	var force = Vector2(0, gravity)
+	var stop = true
+	
 	if goLeft:
 		if velocity.x <= walkMin and velocity.x > -walkMax:
 			force.x -= walkForce
 			stop = false
 			playerSprite.set_flip_h(true)
-
 	elif goRight:
 		if velocity.x >= -walkMin and velocity.x < walkMax:
 			force.x += walkForce
@@ -70,7 +82,6 @@ func _physics_process(delta):
 		if vlen < 0:
 			vlen = 0
 		velocity.x = vlen * vsign
-
 	if is_on_floor():
 		onAirTime = 0
 		jumpCount = 1
@@ -79,14 +90,8 @@ func _physics_process(delta):
 	
 	velocity += force * get_physics_process_delta_time()
 	velocity = move_and_slide(velocity, Vector2(0,-1))
-	
-	
-	if jump:
-		if onAirTime < jumpMaxAirborneTime and jumpCount < maxJumps:
-			velocity.y = -jumpForce
-			jumpCount += 1
-	onAirTime += delta
-	
+
+func _animate():
 	if velocity.length() > 0:
 		playerSprite.play()
 	elif playerSprite.animation == "idle":
@@ -104,22 +109,3 @@ func _physics_process(delta):
 		playerSprite.animation = "idle"
 	elif abs(velocity.x) > 0 and not jumping:
 		playerSprite.animation = "run"
-	
-	
-
-
-		
-
-
-			
-	
-
-	
-
-	
-
-	
-
-	
-	
-		
