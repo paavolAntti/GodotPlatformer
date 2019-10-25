@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://Assets/Sunny-land-files/PNG/environment/layers/tileset.png" type="Texture" id=1]
 
@@ -7,6 +7,11 @@ extents = Vector2( 8, 2 )
 
 [sub_resource type="RectangleShape2D" id=2]
 extents = Vector2( 8, 2 )
+
+[sub_resource type="GDScript" id=3]
+script/source = "extends Sprite
+
+"
 
 [node name="WorldRoot" type="Node2D"]
 
@@ -168,6 +173,7 @@ position = Vector2( 73.1393, 103.827 )
 texture = ExtResource( 1 )
 region_enabled = true
 region_rect = Rect2( 112, 160, 16, 16 )
+script = SubResource( 3 )
 
 [node name="Sprite14" type="Sprite" parent="."]
 position = Vector2( 112, 88 )
