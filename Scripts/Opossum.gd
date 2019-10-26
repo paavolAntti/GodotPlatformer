@@ -10,7 +10,7 @@ func _ready():
 	pass
 
 func _physics_process(delta):
-	velocity.x = -speed
-	velocity.y += normalGravity
+	velocity.x = -speed 
+	velocity.y = normalGravity
 
 	velocity = move_and_slide(velocity, ground)

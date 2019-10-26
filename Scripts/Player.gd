@@ -33,12 +33,8 @@ onready var throwable = preload("res://Scenes/Throwable.tscn")
 onready var throwPos = self.get_node("ThrowPosition")
 
 func _ready():
-	#luodaan throwrate timer
-	timer = Timer.new()
-	timer.set_one_shot(true)
-	timer.set_wait_time(throwRate)
-	timer.connect("timeout", self, "timer_complete")
-	add_child(timer)
+	throw_timer()
+	
 
 func _physics_process(delta):
 	move(delta)
@@ -46,6 +42,15 @@ func _physics_process(delta):
 	climb()
 	animate()
 	throw(delta)
+
+
+func throw_timer():
+	timer = Timer.new()
+	timer.set_one_shot(true)
+	timer.set_wait_time(throwRate)
+	timer.connect("timeout", self, "timer_complete")
+	add_child(timer)
+
 
 func timer_complete():
 	canThrow = true	
@@ -111,7 +116,7 @@ func move(delta):
 		jumping = false
 		
 	
-	velocity += force * get_physics_process_delta_time()
+	velocity += force * delta
 	velocity = move_and_slide(velocity, Vector2(0,-1))
 
 func animate():
