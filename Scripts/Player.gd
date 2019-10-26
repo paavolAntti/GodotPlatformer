@@ -12,6 +12,9 @@ const slideStopVelocity = 1.0
 const slideStopMinTravel = 1.0
 const maxJumps = 2
 const climbSpeed = 50
+const throwPower = 75
+const throwTimer = 0.2
+const throwRate = 0.5
 
 var gravity = 500.0
 var onLadder = false
@@ -20,16 +23,33 @@ var onAirTime = 100
 var jumpCount = 0
 var jumping = false
 var climbing = false
+var facingRight = true
+var throwTime = throwTimer
+var timer = null
+var canThrow = true
 
 onready var playerSprite = self.get_node("PlayerSprite")
+onready var throwable = preload("res://Scenes/Throwable.tscn")
+onready var throwPos = self.get_node("ThrowPosition")
+
+func _ready():
+	#luodaan throwrate timer
+	timer = Timer.new()
+	timer.set_one_shot(true)
+	timer.set_wait_time(throwRate)
+	timer.connect("timeout", self, "timer_complete")
+	add_child(timer)
 
 func _physics_process(delta):
-	_move(delta)
-	_jump(delta)
-	_climb()
-	_animate()
-	
-func _climb():
+	move(delta)
+	jump(delta)
+	climb()
+	animate()
+	throw(delta)
+
+func timer_complete():
+	canThrow = true	
+func climb():
 	var climbUp = Input.is_action_pressed("ui_up")
 	var climbDown = Input.is_action_pressed("ui_down")
 	
@@ -49,7 +69,7 @@ func _climb():
 		gravity = normalGravity
 		climbing = false
 	
-func _jump(delta):
+func jump(delta):
 	var jump = Input.is_action_just_pressed("JUMP")
 	if jump:
 		if onAirTime < jumpMaxAirborneTime and jumpCount < maxJumps:
@@ -57,7 +77,7 @@ func _jump(delta):
 			jumpCount += 1
 	onAirTime += delta
 	
-func _move(delta):
+func move(delta):
 	var goLeft = Input.is_action_pressed("LEFT")
 	var goRight = Input.is_action_pressed("RIGHT")
 	var force = Vector2(0, gravity)
@@ -68,11 +88,14 @@ func _move(delta):
 			force.x -= walkForce
 			stop = false
 			playerSprite.set_flip_h(true)
+			facingRight = false
+			
 	elif goRight:
 		if velocity.x >= -walkMin and velocity.x < walkMax:
 			force.x += walkForce
 			stop = false
 			playerSprite.set_flip_h(false)
+			facingRight = true
 
 	if stop:
 		var vsign = sign(velocity.x)
@@ -91,15 +114,16 @@ func _move(delta):
 	velocity += force * get_physics_process_delta_time()
 	velocity = move_and_slide(velocity, Vector2(0,-1))
 
-func _animate():
+func animate():
 	if velocity.length() > 0:
 		playerSprite.play()
 	elif playerSprite.animation == "idle":
 		playerSprite.play()
 	else:
 		playerSprite.stop()
-
-	if velocity.y < 0 and not onLadder:
+	if throwTime <= throwTimer:
+		playerSprite.animation = "throw"
+	elif velocity.y < 0 and not onLadder:
 		playerSprite.animation = "jump"
 	elif climbing:
 		playerSprite.animation = "climb"
@@ -109,3 +133,21 @@ func _animate():
 		playerSprite.animation = "idle"
 	elif abs(velocity.x) > 0 and not jumping:
 		playerSprite.animation = "run"
+	
+
+func throw(delta):
+	var throw = Input.is_action_just_pressed("SHOOT")
+	var cherry = throwable.instance()
+
+	if throw and canThrow:
+		throwTime = 0
+		var direction = 1
+		cherry.position = Vector2(throwPos.position.x, throwPos.position.y)
+		add_child(cherry)
+		if !facingRight:
+			direction = -1
+			cherry.position = Vector2(-throwPos.position.x, throwPos.position.y)
+		cherry.launch(direction)
+		canThrow = false
+		timer.start()
+	throwTime += delta
