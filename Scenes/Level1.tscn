@@ -37,5 +37,11 @@ script = ExtResource( 3 )
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Ladder"]
 position = Vector2( 4.21436, 1.75192 )
 shape = SubResource( 2 )
+
+[node name="EnemySpawn1" type="Position2D" parent="."]
+position = Vector2( 932.822, 414.111 )
+
+[node name="EnemySpawn2" type="Position2D" parent="."]
+position = Vector2( 510.137, 271.787 )
 [connection signal="body_entered" from="Ladder" to="Ladder" method="_on_Ladder_body_entered"]
 [connection signal="body_exited" from="Ladder" to="Ladder" method="_on_Ladder_body_exited"]
