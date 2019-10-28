@@ -1,17 +1,17 @@
-[gd_scene load_steps=22 format=2]
+[gd_scene load_steps=24 format=2]
 
 [ext_resource path="res://Scripts/Player.gd" type="Script" id=1]
 [ext_resource path="res://Assets/Sunny-land-files/PNG/sprites/player/idle/player-idle-1.png" type="Texture" id=2]
 [ext_resource path="res://Assets/Sunny-land-files/PNG/sprites/player/idle/player-idle-2.png" type="Texture" id=3]
 [ext_resource path="res://Assets/Sunny-land-files/PNG/sprites/player/idle/player-idle-3.png" type="Texture" id=4]
 [ext_resource path="res://Assets/Sunny-land-files/PNG/sprites/player/idle/player-idle-4.png" type="Texture" id=5]
-[ext_resource path="res://Assets/Sunny-land-files/PNG/sprites/player/climb/player-climb-1.png" type="Texture" id=6]
-[ext_resource path="res://Assets/Sunny-land-files/PNG/sprites/player/climb/player-climb-2.png" type="Texture" id=7]
-[ext_resource path="res://Assets/Sunny-land-files/PNG/sprites/player/climb/player-climb-3.png" type="Texture" id=8]
+[ext_resource path="res://Assets/Sunny-land-files/PNG/sprites/player/hurt/player-hurt-1.png" type="Texture" id=6]
+[ext_resource path="res://Assets/Sunny-land-files/PNG/sprites/player/hurt/player-hurt-2.png" type="Texture" id=7]
+[ext_resource path="res://Assets/Sunny-land-files/PNG/sprites/player/jump/player-jump-1.png" type="Texture" id=8]
 [ext_resource path="res://Assets/Sunny-land-files/PNG/sprites/player/run/player-run-5.png" type="Texture" id=9]
-[ext_resource path="res://Assets/Sunny-land-files/PNG/sprites/player/hurt/player-hurt-1.png" type="Texture" id=10]
-[ext_resource path="res://Assets/Sunny-land-files/PNG/sprites/player/hurt/player-hurt-2.png" type="Texture" id=11]
-[ext_resource path="res://Assets/Sunny-land-files/PNG/sprites/player/jump/player-jump-1.png" type="Texture" id=12]
+[ext_resource path="res://Assets/Sunny-land-files/PNG/sprites/player/climb/player-climb-1.png" type="Texture" id=10]
+[ext_resource path="res://Assets/Sunny-land-files/PNG/sprites/player/climb/player-climb-2.png" type="Texture" id=11]
+[ext_resource path="res://Assets/Sunny-land-files/PNG/sprites/player/climb/player-climb-3.png" type="Texture" id=12]
 [ext_resource path="res://Assets/Sunny-land-files/PNG/sprites/player/jump/player-jump-2.png" type="Texture" id=13]
 [ext_resource path="res://Assets/Sunny-land-files/PNG/sprites/player/run/player-run-1.png" type="Texture" id=14]
 [ext_resource path="res://Assets/Sunny-land-files/PNG/sprites/player/run/player-run-2.png" type="Texture" id=15]
@@ -19,6 +19,7 @@
 [ext_resource path="res://Assets/Sunny-land-files/PNG/sprites/player/run/player-run-4.png" type="Texture" id=17]
 [ext_resource path="res://Assets/Sunny-land-files/PNG/sprites/player/run/player-run-6.png" type="Texture" id=18]
 [ext_resource path="res://Assets/Sunny-land-files/PNG/environment/layers/back.png" type="Texture" id=19]
+[ext_resource path="res://Scripts/HitBox.gd" type="Script" id=20]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 8, 10 )
@@ -30,9 +31,14 @@ animations = [ {
 "name": "idle",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 6 ), ExtResource( 7 ), ExtResource( 8 ) ],
+"frames": [ ExtResource( 6 ), ExtResource( 7 ) ],
 "loop": true,
-"name": "climb",
+"name": "hurt",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 8 ) ],
+"loop": true,
+"name": "jump",
 "speed": 5.0
 }, {
 "frames": [ ExtResource( 9 ), ExtResource( 9 ), ExtResource( 9 ) ],
@@ -40,14 +46,9 @@ animations = [ {
 "name": "throw",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 10 ), ExtResource( 11 ) ],
+"frames": [ ExtResource( 10 ), ExtResource( 11 ), ExtResource( 12 ) ],
 "loop": true,
-"name": "hurt",
-"speed": 5.0
-}, {
-"frames": [ ExtResource( 12 ) ],
-"loop": true,
-"name": "jump",
+"name": "climb",
 "speed": 5.0
 }, {
 "frames": [ ExtResource( 13 ) ],
@@ -60,11 +61,14 @@ animations = [ {
 "name": "run",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 6 ) ],
+"frames": [ ExtResource( 10 ) ],
 "loop": true,
 "name": "climbStop",
 "speed": 5.0
 } ]
+
+[sub_resource type="RectangleShape2D" id=3]
+extents = Vector2( 8.27506, 10.94 )
 
 [node name="Player" type="KinematicBody2D"]
 script = ExtResource( 1 )
@@ -83,7 +87,6 @@ offset_v = -0.88
 [node name="PlayerSprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 2 )
 animation = "throw"
-frame = 1
 playing = true
 
 [node name="ParallaxBackground" type="ParallaxBackground" parent="."]
@@ -99,3 +102,11 @@ centered = false
 
 [node name="ThrowPosition" type="Position2D" parent="."]
 position = Vector2( 13.3946, 5.1213 )
+
+[node name="HitBox" type="Area2D" parent="."]
+script = ExtResource( 20 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitBox"]
+position = Vector2( -0.285309, 3.47117 )
+shape = SubResource( 3 )
+[connection signal="body_entered" from="HitBox" to="HitBox" method="_on_HitBox_body_entered"]

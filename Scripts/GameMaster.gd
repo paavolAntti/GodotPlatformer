@@ -5,9 +5,10 @@ onready var opossumScene = preload("res://Scenes/Opossum.tscn")
 onready var enemySpawnArray = [get_node("EnemySpawn1"), get_node("EnemySpawn2")]
 const spawnRate = 4.0
 const maxEnemies = 2
+
 var currentEnemyCount = 0
 var canSpawn = true
-var timer = null
+var spawnTimer = null
 
 func _ready():
 	enemy_spawn_timer()
@@ -33,16 +34,24 @@ func spawn_enemy(spawnPos):
 	print("spawned enemy")
 	currentEnemyCount +=1
 	canSpawn = false
-	timer.start()
+	spawnTimer.start()
 
 
 func timer_complete():
 	canSpawn = true
+	
+
+func restart_scene():
+	get_tree().reload_current_scene()
 
 
 func enemy_spawn_timer():
-	timer = Timer.new()
-	timer.set_one_shot(true)
-	timer.set_wait_time(spawnRate)
-	timer.connect("timeout", self, "timer_complete")
-	add_child(timer)
+	spawnTimer = Timer.new()
+	spawnTimer.set_one_shot(true)
+	spawnTimer.set_wait_time(spawnRate)
+	spawnTimer.connect("timeout", self, "timer_complete")
+	add_child(spawnTimer)
+
+
+
+

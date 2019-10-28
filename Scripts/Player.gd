@@ -9,6 +9,7 @@ const climbSpeed = 50
 const throwTimer = 0.2
 const throwRate = 0.5
 const hurtTime = 0.5
+const maxAmmo = 5
 
 var gravity = 500.0
 var onAirTime = 100
@@ -23,11 +24,14 @@ var throwTime = throwTimer
 var timer = null
 var hurtTimer = null
 var snapVector = Vector2(0, 32)
-var hurt = false
+var isHurt = false
+var playerLives = 3
+var currentAmmo = maxAmmo
 
 onready var playerSprite = self.get_node("PlayerSprite")
 onready var throwable = preload("res://Scenes/Throwable.tscn")
 onready var throwPos = self.get_node("ThrowPosition")
+onready var gameMaster = get_parent()
 
 func _ready():
 	throw_timer()
@@ -63,7 +67,14 @@ func timer_complete():
 
 
 func hurt_timer_complete():
-	hurt = false
+	isHurt = false
+
+func hurt():
+	isHurt = true
+	hurtTimer.start()
+	playerLives -= 1
+	if playerLives <= 0:
+		gameMaster.restart_scene()
 
 
 func climb():
@@ -71,7 +82,6 @@ func climb():
 	var climbDown = Input.is_action_pressed("ui_down")
 	
 	if onLadder:
-		snapVector = Vector2(0, 0)
 		onAirTime = 0
 		gravity = 0
 		if climbUp:
@@ -132,7 +142,7 @@ func animate():
 		playerSprite.play()
 	else:
 		playerSprite.stop()
-	if hurt:
+	if isHurt:
 		playerSprite.animation = "hurt"
 	elif throwTime <= throwTimer:
 		playerSprite.animation = "throw"
@@ -152,7 +162,8 @@ func throw(delta):
 	var throw = Input.is_action_just_pressed("SHOOT")
 	var cherry = throwable.instance()
 
-	if throw and canThrow:
+	if throw and canThrow and currentAmmo > 0:
+		currentAmmo -= 1
 		throwTime = 0
 		var direction = 1
 		cherry.position = Vector2(throwPos.position.x, throwPos.position.y)
