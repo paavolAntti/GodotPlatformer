@@ -1,12 +1,12 @@
 extends KinematicBody2D
 
 const gravity = 600.0
-const throwVelocity = Vector2(200, -100)
+const throw_velocity = Vector2(200, -100)
 
 var velocity = Vector2()
 
-onready var hitEffect = preload("res://Scenes/NormalHit.tscn").instance()
-onready var enemyHitEffect = preload("res://Scenes/EnemyHit.tscn").instance()
+onready var hit_effect = preload("res://Scenes/NormalHit.tscn").instance()
+onready var enemy_hit_effect = preload("res://Scenes/EnemyHit.tscn").instance()
 
 
 func _ready():
@@ -26,17 +26,17 @@ func launch(direction):
 	get_parent().remove_child(self)
 	scene.add_child(self)
 	global_transform = temp
-	velocity = throwVelocity * Vector2(direction, 1)
+	velocity = throw_velocity * Vector2(direction, 1)
 	set_physics_process(true)
 
 
 func _on_collision(collision):
 	if collision.collider.is_in_group("enemies"):
 		collision.collider.queue_free()
-		enemyHitEffect.set_position(self.get_position())
-		get_parent().add_child(enemyHitEffect)
+		enemy_hit_effect.set_position(self.get_position())
+		get_parent().add_child(enemy_hit_effect)
 		queue_free()
 	else:
-		hitEffect.set_position(self.get_position())
-		get_parent().add_child(hitEffect)
+		hit_effect.set_position(self.get_position())
+		get_parent().add_child(hit_effect)
 		queue_free()
