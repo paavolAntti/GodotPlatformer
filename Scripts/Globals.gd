@@ -1,4 +1,6 @@
 extends Node
 
-const GRAVITY = 500.0
-const FLOOR = Vector2(0,-1)
+const normal_gravity = 600.0
+const ground = Vector2(0,-1)
+
+var player_score = 0

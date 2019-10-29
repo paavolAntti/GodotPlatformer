@@ -1,6 +1,5 @@
 extends KinematicBody2D
 
-const normal_gravity = 500.0
 const walk_force = 100
 const jump_force = 150
 const max_airborne_time = 0.5
@@ -11,7 +10,7 @@ const throw_rate = 0.5
 const hurt_time = 0.5
 const max_ammo = 5
 
-var gravity = 500.0
+var gravity = Globals.normal_gravity
 var on_air_time = 100
 var jump_count = 0
 var on_ladder = false
@@ -75,7 +74,7 @@ func hurt_timer_complete():
 
 func hurt(direction):
 	if climbing:
-		gravity = normal_gravity
+		gravity = Globals.normal_gravity
 
 	is_hurt = true
 	hurt_timer.start()
@@ -94,6 +93,7 @@ func climb():
 	if on_ladder:
 		on_air_time = 0
 		gravity = 0
+		jump_count = 1
 		if climb_up:
 			velocity.y = -climb_speed
 			climbing = true
@@ -104,7 +104,7 @@ func climb():
 		else:
 			velocity.y = 0
 	else:
-		gravity = normal_gravity
+		gravity = Globals.normal_gravity
 		climbing = false
 
 	
@@ -147,7 +147,7 @@ func handle_velocity(delta):
 		jump_count = 1
 
 	velocity.y += gravity * delta
-	velocity = move_and_slide_with_snap(velocity, snap_vector, Vector2(0,-1), true)
+	velocity = move_and_slide_with_snap(velocity, snap_vector,Globals.ground , true)
 
 func animate():
 	if velocity.length() > 0:
@@ -194,5 +194,3 @@ func set_snap(toggle):
 	else:
 		snap_vector = Vector2()
 
-
-#TODO handle snap function

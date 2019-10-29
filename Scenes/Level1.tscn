@@ -41,9 +41,9 @@ position = Vector2( 1.16306, 3.69366 )
 shape = SubResource( 2 )
 
 [node name="EnemySpawn1" type="Position2D" parent="."]
-position = Vector2( 932.822, 414.111 )
+position = Vector2( 906.657, 404.441 )
 
 [node name="EnemySpawn2" type="Position2D" parent="."]
-position = Vector2( 426.546, 416.413 )
+position = Vector2( 513.003, 248.048 )
 [connection signal="body_entered" from="Ladder" to="Ladder" method="_on_Ladder_body_entered"]
 [connection signal="body_exited" from="Ladder" to="Ladder" method="_on_Ladder_body_exited"]

@@ -14,7 +14,7 @@ func _ready():
 
 
 func _physics_process(delta):
-	velocity.y += gravity * delta
+	velocity.y += Globals.normal_gravity * delta
 	var collision = move_and_collide(velocity * delta)
 	if collision != null:
 		_on_collision(collision)
