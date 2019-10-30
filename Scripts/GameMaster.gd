@@ -9,6 +9,7 @@ const max_enemies = 2
 var current_enemies = 0
 var can_spawn = true
 var spawn_timer = null
+var player = null
 
 func _ready():
 	enemy_spawn_timer()
@@ -18,11 +19,12 @@ func _ready():
 func _process(delta):
 	if current_enemies < max_enemies and can_spawn:
 		spawn_enemy(enemy_spawn_positions[randi()%enemy_spawn_positions.size()])
+	handle_score()
 
 
 func spawn_player():
-	var player = player_scene.instance()
 	var spawn = get_node("SpawnPoint")
+	player = player_scene.instance()
 	player.position = Vector2(spawn.position.x, spawn.position.y)
 	add_child(player)
 
@@ -52,6 +54,10 @@ func enemy_spawn_timer():
 	spawn_timer.connect("timeout", self, "timer_complete")
 	add_child(spawn_timer)
 
+func handle_score():
+	if Globals.player_score >= 100:
+		player.player_lives += 1
+		Globals.player_score = 0
 
 
 

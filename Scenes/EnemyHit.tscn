@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=2]
 
-[ext_resource path="res://Scripts/EnemyHit.gd" type="Script" id=1]
+[ext_resource path="res://Scripts/Effect.gd" type="Script" id=1]
 [ext_resource path="res://Assets/Sunny-land-files/PNG/sprites/enemy-death/enemy-death-1.png" type="Texture" id=2]
 [ext_resource path="res://Assets/Sunny-land-files/PNG/sprites/enemy-death/enemy-death-2.png" type="Texture" id=3]
 [ext_resource path="res://Assets/Sunny-land-files/PNG/sprites/enemy-death/enemy-death-3.png" type="Texture" id=4]
@@ -19,8 +19,8 @@ animations = [ {
 [node name="EnemyHitRoot" type="Node2D"]
 script = ExtResource( 1 )
 
-[node name="EnemyHit" type="AnimatedSprite" parent="."]
+[node name="Effect" type="AnimatedSprite" parent="."]
 frames = SubResource( 1 )
-frame = 1
+frame = 4
 playing = true
-[connection signal="animation_finished" from="EnemyHit" to="." method="_on_EnemyHit_animation_finished"]
+[connection signal="animation_finished" from="Effect" to="." method="_on_Effect_animation_finished"]

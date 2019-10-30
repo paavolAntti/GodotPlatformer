@@ -1,14 +1,23 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://Scripts/GameMaster.gd" type="Script" id=1]
 [ext_resource path="res://SunnyTileSet.tres" type="TileSet" id=2]
 [ext_resource path="res://Scripts/Ladder.gd" type="Script" id=3]
+[ext_resource path="res://Scenes/Gem.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Assets/Sunny-land-files/PNG/environment/props/house.png" type="Texture" id=5]
+[ext_resource path="res://Assets/Sunny-land-files/PNG/environment/props/sign.png" type="Texture" id=6]
+[ext_resource path="res://Scripts/InfoSign.gd" type="Script" id=7]
+[ext_resource path="res://Assets/Sunny-land-files/PNG/environment/props/bush.png" type="Texture" id=8]
+[ext_resource path="res://Assets/Sunny-land-files/PNG/environment/props/tree.png" type="Texture" id=9]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 10, 300 )
 
 [sub_resource type="RectangleShape2D" id=2]
 extents = Vector2( 2.53668, 66.8589 )
+
+[sub_resource type="RectangleShape2D" id=3]
+extents = Vector2( 8.2379, 10 )
 
 [node name="WorldRoot" type="Node2D"]
 script = ExtResource( 1 )
@@ -24,6 +33,7 @@ tile_data = PoolIntArray( 1179678, 14, 0, 1179680, 4, 0, 1179681, 4, 0, 1179682,
 position = Vector2( 30.1469, 413.011 )
 
 [node name="Bounds" type="StaticBody2D" parent="."]
+editor/display_folded = true
 position = Vector2( -11.6881, 185.062 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Bounds"]
@@ -33,6 +43,7 @@ shape = SubResource( 1 )
 polygon = PoolVector2Array( 492.374, 83.9806, 357.841, 150.837, 359.203, 164.752, 392.974, 164.514, 502.375, 108.387, 552.572, 84.3864 )
 
 [node name="Ladder" type="Area2D" parent="."]
+editor/display_folded = true
 position = Vector2( 262.005, 385.016 )
 script = ExtResource( 3 )
 
@@ -45,5 +56,59 @@ position = Vector2( 906.657, 404.441 )
 
 [node name="EnemySpawn2" type="Position2D" parent="."]
 position = Vector2( 513.003, 248.048 )
+
+[node name="Gems" type="Node2D" parent="."]
+editor/display_folded = true
+
+[node name="GemRoot" parent="Gems" instance=ExtResource( 4 )]
+position = Vector2( 100, 400 )
+
+[node name="GemRoot2" parent="Gems" instance=ExtResource( 4 )]
+position = Vector2( 140, 400 )
+
+[node name="GemRoot3" parent="Gems" instance=ExtResource( 4 )]
+position = Vector2( 180, 400 )
+
+[node name="GemRoot4" parent="Gems" instance=ExtResource( 4 )]
+position = Vector2( 220, 400 )
+
+[node name="WorldElements" type="Node2D" parent="."]
+
+[node name="FoxHouse" type="Sprite" parent="WorldElements"]
+position = Vector2( 44.821, 381.198 )
+texture = ExtResource( 5 )
+
+[node name="InfoSign" type="Sprite" parent="WorldElements"]
+position = Vector2( 160.174, 424.921 )
+texture = ExtResource( 6 )
+script = ExtResource( 7 )
+
+[node name="Area2D" type="Area2D" parent="WorldElements/InfoSign"]
+editor/display_folded = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WorldElements/InfoSign/Area2D"]
+shape = SubResource( 3 )
+
+[node name="Bush" type="Sprite" parent="WorldElements"]
+position = Vector2( -16.874, 422.491 )
+texture = ExtResource( 8 )
+
+[node name="Bush2" type="Sprite" parent="WorldElements"]
+position = Vector2( 99.4059, 422.055 )
+texture = ExtResource( 8 )
+
+[node name="Tree" type="Sprite" parent="WorldElements"]
+position = Vector2( 508.527, 223.938 )
+texture = ExtResource( 9 )
+
+[node name="Tree3" type="Sprite" parent="WorldElements"]
+position = Vector2( -148.884, 388.59 )
+texture = ExtResource( 9 )
+
+[node name="Tree2" type="Sprite" parent="WorldElements"]
+position = Vector2( 815.996, 389.775 )
+texture = ExtResource( 9 )
 [connection signal="body_entered" from="Ladder" to="Ladder" method="_on_Ladder_body_entered"]
 [connection signal="body_exited" from="Ladder" to="Ladder" method="_on_Ladder_body_exited"]
+[connection signal="body_entered" from="WorldElements/InfoSign/Area2D" to="WorldElements/InfoSign" method="_on_Area2D_body_entered"]
+[connection signal="body_exited" from="WorldElements/InfoSign/Area2D" to="WorldElements/InfoSign" method="_on_Area2D_body_exited"]

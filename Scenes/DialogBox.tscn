@@ -1,0 +1,26 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://Scripts/DialogBox.gd" type="Script" id=1]
+
+[node name="DialogBox" type="Polygon2D"]
+scale = Vector2( 0.520472, 0.6484 )
+color = Color( 1, 1, 1, 0.572549 )
+polygon = PoolVector2Array( 0, 0, 288.2, 0, 288.2, 123.381, 172.92, 123.381, 0, 123.381 )
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+margin_left = 20.0
+margin_top = 20.0
+margin_right = 263.0
+margin_bottom = 120.0
+custom_colors/default_color = Color( 0, 0, 0, 1 )
+bbcode_enabled = true
+text = "Welcome to Frank the Foxes home! Use arrows to move Frank.
+He can also jump with spacebar
+and throw cherrybombs with
+ctrl-button, but remember Frank can only carry 5 cherrybombs at a time"
+script = ExtResource( 1 )
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.05
+autostart = true
+[connection signal="timeout" from="Timer" to="RichTextLabel" method="_on_Timer_timeout"]

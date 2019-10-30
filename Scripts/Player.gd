@@ -45,7 +45,6 @@ func _physics_process(delta):
 		throw(delta)
 	animate()
 	handle_velocity(delta)
-	print(snap_vector)
 	
 
 func hurt_timer():
