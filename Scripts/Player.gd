@@ -89,7 +89,7 @@ func climb():
 	var climb_up = Input.is_action_pressed("ui_up")
 	var climb_down = Input.is_action_pressed("ui_down")
 	
-	if on_ladder:
+	if on_ladder and velocity.x == 0:
 		on_air_time = 0
 		gravity = 0
 		jump_count = 1
@@ -161,7 +161,7 @@ func animate():
 		player_animator.animation = "throw"
 	elif velocity.y < 0 and not on_ladder and !is_on_floor():
 		player_animator.animation = "jump"
-	elif climbing:
+	elif on_ladder and velocity.x == 0:
 		player_animator.animation = "climb"
 	elif velocity.y > 0 and !is_on_floor():
 		player_animator.animation = "land"
