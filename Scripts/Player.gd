@@ -1,6 +1,8 @@
 extends KinematicBody2D
 
-const walk_force = 100
+const max_walk_force = 100
+const min_walk_force = 10
+const walk_force_increase = 10
 const jump_force = 150
 const max_airborne_time = 0.5
 const max_jumps = 2
@@ -9,6 +11,7 @@ const throw_timer = 0.2
 const throw_rate = 0.5
 const hurt_time = 0.5
 const max_ammo = 5
+const stop_force = 10
 
 var gravity = Globals.normal_gravity
 var on_air_time = 100
@@ -27,6 +30,7 @@ var player_lives = 3
 var current_ammo = max_ammo
 var current_direction = 1
 
+
 onready var player_animator = self.get_node("PlayerSprite")
 onready var throwable = preload("res://Scenes/Throwable.tscn")
 onready var projectile_origin = self.get_node("ThrowPosition")
@@ -39,12 +43,10 @@ func _ready():
 
 func _physics_process(delta):
 	if !is_hurt:
-		get_input(delta)
-		jump(delta)
-		climb()
-		throw(delta)
+		handle_input(delta)
 	animate()
-	handle_velocity(delta)
+	handle_velocity_and_time(delta)
+	
 	
 
 func hurt_timer():
@@ -89,7 +91,7 @@ func climb():
 	var climb_up = Input.is_action_pressed("ui_up")
 	var climb_down = Input.is_action_pressed("ui_down")
 	
-	if on_ladder and velocity.x == 0:
+	if on_ladder:
 		on_air_time = 0
 		gravity = 0
 		jump_count = 1
@@ -108,43 +110,56 @@ func climb():
 
 	
 func jump(delta):
-	var jump = Input.is_action_just_pressed("JUMP")
+	if on_air_time < max_airborne_time and jump_count < max_jumps:
+		set_snap(false)
+		velocity.y = -jump_force
+		jump_count += 1	
+	on_air_time += delta
 
-	if jump:
-		if on_air_time < max_airborne_time and jump_count < max_jumps:
-			set_snap(false)
-			velocity.y = -jump_force
-			jump_count += 1	
-	on_air_time += delta	
+func run(direction, facing_right):
+	velocity.x += walk_force_increase*direction
+	player_animator.set_flip_h(facing_right)
+	current_direction = direction
+
+func stop():
+	if velocity.x > 0:
+		velocity.x -= stop_force 
+		if velocity.x < 0:
+			velocity.x = 0
+	elif velocity.x < 0:
+		velocity.x += stop_force
+		if velocity.x > 0:
+			velocity.x = 0
 
 	
-func get_input(delta):
+func handle_input(delta):
 	if on_air_time >= max_airborne_time:
 		set_snap(true)
 	elif on_air_time == 0 and snap_vector == Vector2() and !on_ladder:
 		set_snap(true)
 
-	velocity.x = 0
 	var left = Input.is_action_pressed("LEFT")
 	var right = Input.is_action_pressed("RIGHT")
+	var jump = Input.is_action_just_pressed("JUMP")
+	var throw = Input.is_action_just_pressed("SHOOT")
+	climb()
+	if jump:
+		jump(delta)
+	if throw:
+		throw(delta)
+	if left and velocity.x >= -max_walk_force:
+		run(-1, true)
+	if right and velocity.x <= max_walk_force:
+		run(1, false)
+	elif !right and !left:
+		stop()
 	
-	if left:
-		velocity.x -= walk_force
-		player_animator.set_flip_h(true)
-		current_direction = -1
-
-	elif right:
-		velocity.x += walk_force
-		player_animator.set_flip_h(false)
-		current_direction = 1
 	
-
-
-func handle_velocity(delta):
+func handle_velocity_and_time(delta):
 	if is_on_floor():
 		on_air_time = 0
 		jump_count = 1
-
+	throw_time += delta	
 	velocity.y += gravity * delta
 	velocity = move_and_slide_with_snap(velocity, snap_vector,Globals.ground , true)
 
@@ -161,7 +176,7 @@ func animate():
 		player_animator.animation = "throw"
 	elif velocity.y < 0 and not on_ladder and !is_on_floor():
 		player_animator.animation = "jump"
-	elif on_ladder and velocity.x == 0:
+	elif on_ladder and climbing:
 		player_animator.animation = "climb"
 	elif velocity.y > 0 and !is_on_floor():
 		player_animator.animation = "land"
@@ -172,10 +187,8 @@ func animate():
 	
 
 func throw(delta):
-	var throw = Input.is_action_just_pressed("SHOOT")
-	var cherry = throwable.instance()
-
-	if throw and can_throw and current_ammo > 0:
+	if  can_throw and current_ammo > 0:
+		var cherry = throwable.instance()
 		current_ammo -= 1
 		throw_time = 0
 		var direction = 1
@@ -184,8 +197,7 @@ func throw(delta):
 		cherry.launch(current_direction)
 		can_throw = false
 		timer.start()
-	throw_time += delta
-
+	
 
 func set_snap(toggle):
 	if toggle:
