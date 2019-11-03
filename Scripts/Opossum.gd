@@ -9,6 +9,6 @@ func _ready():
 
 func _physics_process(delta):
 	velocity.x = -speed 
-	velocity.y = Globals.normal_gravity
+	velocity.y += Globals.normal_gravity * delta
 
-	velocity = move_and_slide(velocity, Globals.ground)
+	velocity = move_and_slide_with_snap(velocity,Vector2(0, 32), Globals.ground)

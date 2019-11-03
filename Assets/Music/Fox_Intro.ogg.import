@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/Fox_Intro.ogg-84a4fe4662d16f3ff41e23ef275d4736.oggstr"
+
+[deps]
+
+source_file="res://Assets/Music/Fox_Intro.ogg"
+dest_files=[ "res://.import/Fox_Intro.ogg-84a4fe4662d16f3ff41e23ef275d4736.oggstr" ]
+
+[params]
+
+loop=true
+loop_offset=0

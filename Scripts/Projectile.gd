@@ -1,6 +1,5 @@
 extends KinematicBody2D
 
-const gravity = 600.0
 const throw_velocity = Vector2(200, -100)
 
 var velocity = Vector2()
@@ -31,6 +30,7 @@ func launch(direction):
 
 
 func _on_collision(collision):
+	
 	if collision.collider.is_in_group("enemies"):
 		collision.collider.queue_free()
 		enemy_hit_effect.set_position(self.get_position())

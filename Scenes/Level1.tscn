@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://Scripts/GameMaster.gd" type="Script" id=1]
 [ext_resource path="res://SunnyTileSet.tres" type="TileSet" id=2]
@@ -9,6 +9,7 @@
 [ext_resource path="res://Scripts/InfoSign.gd" type="Script" id=7]
 [ext_resource path="res://Assets/Sunny-land-files/PNG/environment/props/bush.png" type="Texture" id=8]
 [ext_resource path="res://Assets/Sunny-land-files/PNG/environment/props/tree.png" type="Texture" id=9]
+[ext_resource path="res://Assets/Music/mathgrant_-_02_-_A_Foxgers_Prayerful_Dream.ogg" type="AudioStream" id=10]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 10, 300 )
@@ -108,6 +109,10 @@ texture = ExtResource( 9 )
 [node name="Tree2" type="Sprite" parent="WorldElements"]
 position = Vector2( 815.996, 389.775 )
 texture = ExtResource( 9 )
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 10 )
+autoplay = true
 [connection signal="body_entered" from="Ladder" to="Ladder" method="_on_Ladder_body_entered"]
 [connection signal="body_exited" from="Ladder" to="Ladder" method="_on_Ladder_body_exited"]
 [connection signal="body_entered" from="WorldElements/InfoSign/Area2D" to="WorldElements/InfoSign" method="_on_Area2D_body_entered"]

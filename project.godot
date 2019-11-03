@@ -16,7 +16,7 @@ _global_script_class_icons={
 [application]
 
 config/name="FoxPlatformer"
-run/main_scene="res://Scenes/Level1.tscn"
+run/main_scene="res://Scenes/MainMenu.tscn"
 config/icon="res://icon.png"
 
 [autoload]
@@ -26,8 +26,9 @@ Globals="*res://Scripts/Globals.gd"
 [display]
 
 window/size/width=800
+window/vsync/use_vsync=false
 window/stretch/mode="2d"
-window/stretch/aspect="expand"
+window/stretch/aspect="keep"
 
 [input]
 

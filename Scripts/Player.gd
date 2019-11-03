@@ -1,7 +1,6 @@
 extends KinematicBody2D
 
 const max_walk_force = 100
-const min_walk_force = 10
 const walk_force_increase = 10
 const jump_force = 150
 const max_airborne_time = 0.5
@@ -30,11 +29,15 @@ var player_lives = 3
 var current_ammo = max_ammo
 var current_direction = 1
 
-
+onready var sfx_player = self.get_node("SfxPlayer")
 onready var player_animator = self.get_node("PlayerSprite")
 onready var throwable = preload("res://Scenes/Throwable.tscn")
 onready var projectile_origin = self.get_node("ThrowPosition")
 onready var game_master = get_parent()
+
+onready var jump_sound = preload("res://Assets/Sfx/Jump.wav")
+onready var hurt_sound = preload("res://Assets/Sfx/Hit_Hurt.wav")
+
 
 func _ready():
 	throw_timer()
@@ -74,6 +77,8 @@ func hurt_timer_complete():
 
 
 func hurt(direction):
+	sfx_player.set_stream(hurt_sound)
+	sfx_player.play()
 	if climbing:
 		gravity = Globals.normal_gravity
 
@@ -111,6 +116,8 @@ func climb():
 	
 func jump(delta):
 	if on_air_time < max_airborne_time and jump_count < max_jumps:
+		sfx_player.set_stream(jump_sound)
+		sfx_player.play()
 		set_snap(false)
 		velocity.y = -jump_force
 		jump_count += 1	
@@ -118,6 +125,10 @@ func jump(delta):
 
 func run(direction, facing_right):
 	velocity.x += walk_force_increase*direction
+	if velocity.x > max_walk_force:
+		velocity.x = max_walk_force
+	if velocity.x < -max_walk_force:
+		velocity.x = -max_walk_force
 	player_animator.set_flip_h(facing_right)
 	current_direction = direction
 
